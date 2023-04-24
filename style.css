@@ -1,0 +1,132 @@
+*{
+    box-sizing: border-box;
+}
+
+body{
+    margin: 0%;
+    padding: 0%;
+    background-color: lightblue;
+}
+
+
+
+.search{
+    height: 6vh;
+    margin: auto;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    position:static;
+
+}
+
+.startOfListing{
+    display: flex;
+    flex-direction: column;
+}
+
+.card{
+    display: grid;
+    position: relative;
+    grid-template-columns: 9fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    border-radius: 20px;
+    margin: auto;
+    margin-top: 25px;
+    height:max-content;
+    width: 80%;
+    border: 3px solid;
+    background-color: white;
+}
+
+.card:hover{
+    box-Shadow: blue 0px 0px 24px 5px;
+    cursor: pointer;
+}
+
+.position{
+    padding-left: 10px;
+    font-weight: bold;
+    font-size: 35px;
+    /* border : 2px solid tan; */
+}
+
+.locationImg{
+    mix-blend-mode: multiply;
+    height: 30px;
+}
+
+.jobInfo{
+    /* border:2px solid aqua; */
+    display: flex;
+    flex-flow: row wrap;
+    font-weight: small;
+    font-size: 20px;
+    align-items: center;
+}
+
+.info{
+    padding-left: 10px;
+}
+
+
+.jobReq{
+    text-align: left;
+    /* border : 2px solid green; */
+    padding-left: 1%;
+    margin-top: 0%;
+}
+
+.applyBtn{
+    margin-top: 15%;
+    margin-bottom: 15%;
+    margin-right: 20%;
+    grid-area: 1/2/3/3;
+    background: #206dfb;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.applyBtn a{
+    text-decoration: none;
+    text-align: center;
+    color: white;
+}
+
+.applyBtn:hover{
+    background-color: #647ca9;
+}
+
+@media (max-width :1000px){
+
+    .jobReq li{
+        margin-left: 4%;
+        font-size: 1.7vh;
+    }
+}
+
+@media (max-width:680px) {
+
+    .card{
+        display: flex;
+        flex-flow: column nowrap;
+        height: 20%;
+        width:80%
+    }
+
+    .applyBtn{
+        order:3;
+        margin: auto;
+        padding: 1%;
+    }
+    .position{
+        margin: auto;
+    }
+    .jobInfo{
+        margin: auto;
+    }
+    
+}
+
