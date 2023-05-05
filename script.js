@@ -1,175 +1,48 @@
+const userCardTemplate = document.querySelector("[data-user-template]");
+const userCardContainer = document.querySelector("[data-user-cards-container]");
+const searchInput = document.querySelector("[data-search]");
+const clearSearchButton = document.getElementById("clear-search");
 
-let statesData;
-fetch("Data/states.json")
-  .then((response) => response.json())
-  .then((json) => (statesData = json));
-
-function findCountry(stateStr) {
-
-  stateStr = stateStr.toUpperCase();
-
-  for (let i = 0; i < statesData.length; i++) {
-    let statesLst = statesData[i]["states"];
-
-    for (let j = 0; j < statesLst.length; j++) {
-      let state = statesLst[j]["name"].toUpperCase();
-      if (state == stateStr) {
-        return statesData[i]["name"].toUpperCase();
-      }
-    }
-  }
-
-  for (let i = 0; i < statesData.length; i++) {
-    let statesLst = statesData[i]["states"];
-
-    for (let j = 0; j < statesLst.length; j++) {
-      let state = statesLst[j]["name"].toUpperCase();
-      if (state.indexOf(stateStr) >= 0) {
-        return statesData[i]["name"].toUpperCase();
-      }
-    }
-  }
-}
-
-function addCards(cardJSON, index) {
-  div = document.querySelector("#StartOfListing");
-  let template = `
-  <div class="card" onclick="applyBtnClicked(${index})">
-        <div class="position">${cardJSON["position"]}</div>
+let users = [];
 
 
-        <div class="applyBtn">
-          <a href="" class="applyBtnText">Apply</a>
-        </div>
+userCardContainer.querySelectorAll(".card").forEach(card => {
+  card.classList.add("hide");
+});
 
-        <div class="jobInfo">
-          <div class="info">
-
-            ${cardJSON["company"]}
-          </div>
-
-          <div class="info">
-
-            ${cardJSON["location"]}
-          </div>
-
-          <div class="info">
-
-            ${cardJSON["nature"]}
-          </div>
-        </div>
-
-        <div class="jobDescription">
-          <div style = "font-size : 30px">Job Description</div>
-          ${cardJSON["description"]}
-
+searchInput.addEventListener("input", e => {
+  const value = e.target.value.toLowerCase();
+  users.forEach(user => {
+    const isVisible =
+      user.position.toLowerCase().includes(value) 
+      user.company.toLowerCase().includes(value) ||
       
-  `;
-  let reqTemplate = ` <div style = "font-size : 30px">Job Requirements</div>
-  <ul class = "jobReq">`
-  for (let i = 0; i<cardJSON["requirements"].length; i++){
-    reqTemplate += `<li> ${cardJSON["requirements"][i]} </li>`
-  };
-  reqTemplate += '</ul>'
+    user.element.classList.toggle("hide", !isVisible);
+  });
+});
 
-  template+= reqTemplate + '</div> </div>'
-
-  console.log(reqTemplate)
-
-  div.insertAdjacentHTML("beforeend", template);
-}
-
-fetch("Data/database.json")
-  .then(function (response) {
-    return response.json();
-  })
-  .then(function (array) {
-    for (let i = 0; i < array.length; i++) {
-      addCards(array[i], i);
-    }
-  })
-  .catch(function (error) {
-    console.error("Something went wrong");
+fetch("data.json")
+  .then(res => res.json())
+  .then(data => {
+    users = data.map(user => {
+      const card = userCardTemplate.content.cloneNode(true).children[0];
+      const header = card.querySelector("[data-header]");
+      header.textContent = user.position;
+      const body = card.querySelector("[data-body]");
+      body.querySelector("[data-position]").textContent = user.position;
+      body.querySelector("[data-company]").textContent = user.company;
+      body.querySelector("[data-location]").textContent = user.location;
+      body.querySelector("[data-nature]").textContent = user.nature;
+      body.querySelector("[data-description]").textContent = user.description;
+      body.querySelector("[data-requirements]").textContent = user.requirements;
+      userCardContainer.append(card);
+      return { position: user.position.toLowerCase(), company: user.company.toLowerCase(), element: card };
+    });
   });
 
-function searchFunction() {
-  let filter = document.getElementById("searchText").value.toUpperCase();
-
-  let allCards = document.getElementsByClassName("card");
-
-  let fCountry = findCountry(filter);
-  console.log(fCountry);
-
-  for (let i = 0; i < allCards.length; i++) {
-
-    let card = allCards[i];
-
-    let position = card
-      .getElementsByTagName("div")[0]
-      .textContent.toUpperCase()
-      .trim();
-    let company = card
-      .getElementsByTagName("div")[3]
-      .textContent.toUpperCase()
-      .trim();
-    let location = card
-      .getElementsByTagName("div")[4]
-      .textContent.toUpperCase()
-      .trim();
-    let time = card
-      .getElementsByTagName("div")[5]
-      .textContent.toUpperCase()
-      .trim();
 
 
-    let toBeDisplayed;
 
-    //Position
-    if (position.indexOf(filter) >= 0) {
- 
-      toBeDisplayed = true;
-    }
-    // Company
-    else if (company.indexOf(filter) >= 0) {
- 
-      toBeDisplayed = true;
-    }
-    //Location
-    else if (location.indexOf(filter) >= 0 || location.indexOf(fCountry) >= 0) {
-
-      toBeDisplayed = true;
-    }
- 
-    else if (time.indexOf(filter) >= 0) {
- 
-      toBeDisplayed = true;
-    } else {
-      toBeDisplayed = false;
-    }
-
-    if (toBeDisplayed && screen.width > 680) {
-      card.style.display = "grid";
-    } else if (toBeDisplayed && screen.width < 680) {
-      card.style.display = "flex";
-    } else {
-      card.style.display = "none";
-    }
-  }
-}
-
-function applyBtnClicked(index) {
-  let allDesc = document.getElementsByClassName("jobDescription");
-  if (allDesc[index].style.display == "flex") {
-    allDesc[index].style.display = "none";
-  } else {
-    allDesc[index].style.display = "flex";
-  }
-  for (let i = 0; i < allDesc.length; i++) {
-    if (i != index) {
-      allDesc[i].style.display = "none";
-    }
-  }
-  document.getElementById("StartOfListing").style.display = "flex";
-  document.getElementById("StartOfListing").style.flexDirection = "column";
-  document.getElementsByClassName("card").style.marginTop = "25px";
-}
+clearSearchButton.addEventListener("click", () => {
+  searchInput.value = "";
+});
